@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>لوحة الإدارة | الأستاذ مصطفى الحديدي</title>
+<meta name="robots" content="noindex,nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--blue:#1E40AF;--blue-2:#2563EB;--yellow:#06B6D4;--red:#06B6D4;--ink:#0f1830;--muted:#5b6577;--wa:#25D366}
+  body{font-family:'Cairo',sans-serif;background:#f4f7fd;color:var(--ink);direction:rtl;min-height:100vh}
+  a{color:inherit;text-decoration:none}
+
+  .topbar{
+    background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;
+    padding:14px 24px;display:flex;align-items:center;justify-content:space-between;
+    box-shadow:0 4px 18px rgba(30,64,175,.25);position:sticky;top:0;z-index:30;
+  }
+  .topbar-brand{display:flex;align-items:center;gap:12px;font-weight:800}
+  .logo{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.15);color:var(--yellow);display:grid;place-items:center;font-weight:900;font-size:20px}
+  .topbar-actions{display:flex;gap:10px;align-items:center}
+  .btn{
+    display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:10px;
+    font-weight:700;font-size:14px;cursor:pointer;border:0;font-family:inherit;transition:.2s;
+  }
+  .btn-light{background:#fff;color:var(--blue)}
+  .btn-light:hover{background:var(--yellow);color:#3a2a00}
+  .btn-yellow{background:var(--yellow);color:#3a2a00}
+  .btn-yellow:hover{filter:brightness(.95)}
+  .btn-danger{background:var(--red);color:#fff}
+  .btn-out{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25)}
+  .btn-out:hover{background:rgba(255,255,255,.22)}
+
+  .wrap{max-width:1300px;margin:0 auto;padding:24px}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+  @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{
+    background:#fff;border-radius:16px;padding:20px;box-shadow:0 8px 20px rgba(30,64,175,.06);
+    border-right:5px solid var(--blue);
+  }
+  .stat.s2{border-right-color:var(--yellow)}
+  .stat.s3{border-right-color:var(--wa)}
+  .stat.s4{border-right-color:var(--red)}
+  .stat .label{color:var(--muted);font-size:14px;font-weight:600}
+  .stat .num{font-size:32px;font-weight:900;color:var(--blue);margin-top:6px}
+
+  .panel-grid{display:grid;grid-template-columns:1fr 280px;gap:20px}
+  @media(max-width:1000px){.panel-grid{grid-template-columns:1fr}}
+  .panel{
+    background:#fff;border-radius:16px;padding:18px;box-shadow:0 8px 20px rgba(30,64,175,.06);
+  }
+  .panel h3{color:var(--blue);font-size:16px;margin-bottom:12px;font-weight:800}
+  .filters{display:grid;grid-template-columns:2fr 1fr 1fr auto auto;gap:10px;margin-bottom:18px}
+  @media(max-width:760px){.filters{grid-template-columns:1fr 1fr}.filters .full{grid-column:1/-1}}
+  .filters input,.filters select{
+    padding:11px 12px;border:1.5px solid #e1e8f5;border-radius:10px;
+    background:#f7faff;font-family:inherit;font-size:14px;
+  }
+  .filters input:focus,.filters select:focus{outline:none;border-color:var(--blue);background:#fff}
+
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{padding:12px 10px;text-align:right;border-bottom:1px solid #eef1f9;vertical-align:middle}
+  th{background:#f4f7fd;color:var(--blue);font-weight:800;position:sticky;top:60px;font-size:13px}
+  tr:hover td{background:#fafcff}
+  .notes{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+  .btn-sm{padding:6px 10px;border-radius:8px;font-size:12px;border:0;cursor:pointer;font-weight:700;font-family:inherit}
+  .btn-sm.wa{background:var(--wa);color:#fff}
+  .btn-sm.edit{background:rgba(30,64,175,.1);color:var(--blue)}
+  .btn-sm.del{background:rgba(6,182,212,.12);color:var(--red)}
+  .btn-sm.edit:hover{background:var(--blue);color:#fff}
+  .btn-sm.del:hover{background:var(--red);color:#fff}
+  .table-wrap{overflow-x:auto;border-radius:12px}
+
+  .side h4{color:var(--blue);font-size:15px;margin-bottom:10px;font-weight:800}
+  .side ul{list-style:none}
+  .side li{display:flex;justify-content:space-between;padding:8px 10px;border-radius:8px;font-size:14px}
+  .side li:nth-child(odd){background:#f4f7fd}
+  .side li b{color:var(--blue)}
+
+  /* Edit modal */
+  .modal{position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;z-index:60}
+  .modal.show{display:flex}
+  .modal-card{background:#fff;border-radius:18px;padding:26px;width:100%;max-width:480px;max-height:90vh;overflow:auto;box-shadow:0 40px 100px rgba(0,0,0,.4)}
+  .modal-card h3{color:var(--blue);margin-bottom:14px;font-size:18px}
+  .modal-card label{display:block;font-weight:700;font-size:13px;margin:10px 0 5px}
+  .modal-card input,.modal-card select,.modal-card textarea{
+    width:100%;padding:11px 12px;border:1.5px solid #e1e8f5;border-radius:10px;
+    background:#f7faff;font-family:inherit;font-size:14px;
+  }
+  .modal-card input:focus,.modal-card select:focus,.modal-card textarea:focus{outline:none;border-color:var(--blue);background:#fff}
+  .modal-actions{display:flex;gap:8px;margin-top:18px;justify-content:flex-end}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="logo">م</div>
+    <span>لوحة إدارة الحجوزات</span>
+  </div>
+  <div class="topbar-actions">
+    <a class="btn btn-out" href="/" target="_blank">عرض الموقع</a>
+    <a class="btn btn-out" href="/admin/logout">خروج</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="stats">
+    <div class="stat"><div class="label">إجمالي الحجوزات</div><div class="num">{{TOTAL}}</div></div>
+    <div class="stat s2"><div class="label">حجوزات اليوم</div><div class="num">{{TODAY}}</div></div>
+    <div class="stat s3"><div class="label">آخر 7 أيام</div><div class="num">{{WEEK}}</div></div>
+    <div class="stat s4"><div class="label">حالة التسجيل</div><div class="num" style="font-size:22px;color:var(--red)">🔥 مفتوح</div></div>
+  </div>
+
+  <div class="panel-grid">
+    <div class="panel">
+      <form class="filters" method="get" action="/admin">
+        <input class="full" type="search" name="q" placeholder="🔍 ابحث بالاسم أو الهاتف أو الملاحظات..." value="{{Q}}" />
+        <select name="grade">
+          <option value="">كل الصفوف</option>
+          <option>الأول الإعدادي</option>
+          <option>الثاني الإعدادي</option>
+          <option>الثالث الإعدادي</option>
+          <option>الأول الثانوي</option>
+          <option>الثاني الثانوي</option>
+        </select>
+        <select name="location">
+          <option value="">كل المقرات</option>
+          <option>المقر الأول - جلال الدين (سنتر فرح)</option>
+          <option>المقر الثاني - المعتمدية (أمام معمل الكوثر)</option>
+        </select>
+        <button class="btn btn-yellow" type="submit">🔍 تطبيق</button>
+        <a class="btn btn-light" href="/admin">↺ مسح</a>
+      </form>
+
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+        <a class="btn btn-light" id="exportXlsx" href="/admin/export/xlsx">📊 تصدير Excel</a>
+        <a class="btn btn-light" id="exportCsv" href="/admin/export/csv">📋 تصدير CSV</a>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>الاسم</th><th>الهاتف</th><th>الصف</th><th>المقر</th><th>ملاحظات</th><th>التاريخ</th><th>إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="leadsBody">
+            {{ROWS}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="panel side">
+      <h4>📊 حسب الصف</h4>
+      <ul>{{BY_GRADE}}</ul>
+      <h4 style="margin-top:18px">📍 حسب المقر</h4>
+      <ul>{{BY_LOC}}</ul>
+    </aside>
+  </div>
+
+</div>
+
+<!-- Edit modal -->
+<div class="modal" id="editModal">
+  <div class="modal-card">
+    <h3>✏️ تعديل بيانات الطالب</h3>
+    <form id="editForm">
+      <input type="hidden" name="id" />
+      <label>الاسم</label><input name="name" required />
+      <label>الهاتف</label><input name="phone" required />
+      <label>الصف</label>
+      <select name="grade" required>
+        <option>الأول الإعدادي</option>
+        <option>الثاني الإعدادي</option>
+        <option>الثالث الإعدادي</option>
+        <option>الأول الثانوي</option>
+        <option>الثاني الثانوي</option>
+      </select>
+      <label>المقر</label>
+      <select name="location" required>
+        <option>المقر الأول - جلال الدين (سنتر فرح)</option>
+        <option>المقر الثاني - المعتمدية (أمام معمل الكوثر)</option>
+      </select>
+      <label>ملاحظات</label><textarea name="notes" rows="3"></textarea>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-light" id="editCancel">إلغاء</button>
+        <button type="submit" class="btn btn-yellow">💾 حفظ</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Pass current filters to export links
+  (function(){
+    const params = new URLSearchParams(location.search);
+    const qs = params.toString();
+    if (qs) {
+      document.getElementById('exportXlsx').href = '/admin/export/xlsx?' + qs;
+      document.getElementById('exportCsv').href  = '/admin/export/csv?'  + qs;
+    }
+  })();
+
+  // Edit / delete
+  const modal = document.getElementById('editModal');
+  const form = document.getElementById('editForm');
+
+  document.getElementById('leadsBody').addEventListener('click', async (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const id = btn.dataset.id;
+
+    if (btn.classList.contains('edit')) {
+      const r = await fetch('/admin/api/lead/' + id);
+      const j = await r.json();
+      if (!j.ok) return alert('تعذر التحميل');
+      form.elements.id.value = j.lead.id;
+      form.elements.name.value = j.lead.name;
+      form.elements.phone.value = j.lead.phone;
+      form.elements.grade.value = j.lead.grade;
+      form.elements.location.value = j.lead.location;
+      form.elements.notes.value = j.lead.notes || '';
+      modal.classList.add('show');
+    }
+    if (btn.classList.contains('del')) {
+      if (!confirm('هل أنت متأكد من حذف هذا الحجز؟')) return;
+      const r = await fetch('/admin/api/lead/' + id + '/delete', { method: 'POST' });
+      const j = await r.json();
+      if (j.ok) {
+        btn.closest('tr').remove();
+      } else {
+        alert('فشل الحذف');
+      }
+    }
+  });
+
+  document.getElementById('editCancel').addEventListener('click', () => modal.classList.remove('show'));
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = form.elements.id.value;
+    const data = {
+      name: form.elements.name.value,
+      phone: form.elements.phone.value,
+      grade: form.elements.grade.value,
+      location: form.elements.location.value,
+      notes: form.elements.notes.value
+    };
+    const r = await fetch('/admin/api/lead/' + id, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const j = await r.json();
+    if (j.ok) {
+      location.reload();
+    } else {
+      alert('فشل الحفظ');
+    }
+  });
+
+  // Pre-select filter values
+  (function(){
+    const params = new URLSearchParams(location.search);
+    const grade = params.get('grade');
+    const loc = params.get('location');
+    if (grade) { const s = document.querySelector('select[name=grade]'); if (s) s.value = grade; }
+    if (loc) { const s = document.querySelector('select[name=location]'); if (s) s.value = loc; }
+  })();
+</script>
+</body>
+</html>
